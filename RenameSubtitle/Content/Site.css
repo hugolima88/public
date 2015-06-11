@@ -1,0 +1,40 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+
+/* Upload image dialog */
+.uploadimage-dragndrop { border: 2px dashed #DDD; margin: 20px 0; padding: 50px 20px; text-align: center; color: #DDD; }
+.uploadimage-text { font-size: 32px; margin-bottom: 20px; }
+.uploadimage-input { margin: 20px 0; }
+.uploadimage-upload { background: #EEE; margin: 4px 0; }
+.uploadimage-uploadcompleted { background: #d1f4ac; }
+.uploadimage-fileinfo { padding: 5px; font-size: 11px; position: relative; }
+.uploadimage-progresspct { position: absolute; top: 5px; right: 5px; }
+.uploadimage-progress { background: #999; }
+.uploadimage-progressbar { background: maroon; height: 2px; }
+.uploadimage-totalprogress { background: #999; }
+.uploadimage-totalprogressbar { background: #107EC2; height: 6px; }
+
+.description { margin: 40px 0; }

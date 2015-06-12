@@ -84,7 +84,7 @@ namespace RenameSubtitle.Controllers
             System.IO.Directory.CreateDirectory(FORMATTED_SUBTITLES_FOLDER);
         }
 
-        private string _GetMask(string videoNameFormatSample)
+        private string _GetMaskGeneric(string videoNameFormatSample, char seasonChar, char eposideChar)
         {
             string mask = string.Empty;
             bool maskFound = false;
@@ -93,14 +93,14 @@ namespace RenameSubtitle.Controllers
 
             for (int i = 0; i < chars.Length; i++)
             {
-                if (chars[i].Equals('S') && !maskFound)
+                if (chars[i].Equals(seasonChar) && !maskFound)
                 {
                     string tmpNumber = chars[i + 1].ToString() + chars[i + 2].ToString();
                     int tmpSeason = 0;
 
                     if (int.TryParse(tmpNumber, out tmpSeason))
                     {
-                        if (chars[i + 3].Equals('E'))
+                        if (chars[i + 3].Equals(eposideChar))
                         {
                             tmpNumber = chars[i + 4].ToString() + chars[i + 5].ToString();
 
@@ -108,7 +108,7 @@ namespace RenameSubtitle.Controllers
 
                             if (int.TryParse(tmpNumber, out tmpEpisode))
                             {
-                                mask += "S{0}E{1}";
+                                mask += seasonChar + "{0}" + eposideChar + "{1}";
                                 i += 5;
                                 maskFound = true;
                                 continue;
@@ -120,10 +120,50 @@ namespace RenameSubtitle.Controllers
                 mask += chars[i];
             }
 
+            return maskFound ? mask : string.Empty;
+        }
+
+        private string _GetMaskUppercase(string videoNameFormatSample)
+        {
+            return _GetMaskGeneric(videoNameFormatSample, 'S', 'E');
+        }
+
+        private string _GetMaskLowercase(string videoNameFormatSample)
+        {
+            return _GetMaskGeneric(videoNameFormatSample, 's', 'e');
+        }
+
+        private string _GetMask(string videoNameFormatSample)
+        {
+            string mask = _GetMaskUppercase(videoNameFormatSample);
+
+            if (string.IsNullOrEmpty(mask))
+                mask = _GetMaskLowercase(videoNameFormatSample);
+
             return mask;
         }
 
         private string _GetNewFileName(string fileName, string mask)
+        {
+            string newFileName = _GetNewFileNameUpper(fileName, mask);
+
+            if (string.IsNullOrEmpty(newFileName))
+                newFileName = _GetNewFileNameLowercase(fileName, mask);
+
+            return newFileName;
+        }
+
+        private string _GetNewFileNameUpper(string fileName, string mask)
+        {
+            return _GetNewFileNameGeneric(fileName, mask, 'S', 'E');
+        }
+
+        private string _GetNewFileNameLowercase(string fileName, string mask)
+        {
+            return _GetNewFileNameGeneric(fileName, mask, 's', 'e');
+        }
+
+        private string _GetNewFileNameGeneric(string fileName, string mask, char seasonChar, char episodeChar)
         {
             string newFileName = string.Empty;
 
@@ -131,14 +171,14 @@ namespace RenameSubtitle.Controllers
 
             for (int i = 0; i < chars.Length; i++)
             {
-                if (chars[i].Equals('S'))
+                if (chars[i].Equals(seasonChar))
                 {
                     string tmpNumber = chars[i + 1].ToString() + chars[i + 2].ToString();
                     int season = 0;
 
                     if (int.TryParse(tmpNumber, out season))
                     {
-                        if (chars[i + 3].Equals('E'))
+                        if (chars[i + 3].Equals(episodeChar))
                         {
                             tmpNumber = chars[i + 4].ToString() + chars[i + 5].ToString();
 

@@ -1,15 +1,20 @@
 ﻿@model string
 
 
-@using (Html.BeginForm("UploadFiles", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("UploadFiles", "Home", FormMethod.Post, new { @class = "main-form", enctype = "multipart/form-data" }))
 {
-    <div>
-        <input type="text" name="videoNameFormatSample" id="videoNameFormatSample" value="The.Big.Bang.Theory.S04E19.720p.5.1Ch.BluRay.ReEnc-DeeJayAhmed" />
-        <br />
-        <input type="file" name="uploadFile" id="uploadFile" multiple />
-        <br />
-        <button type="submit" id="upload-button">Format</button>
-        <br />
-        <label>@Model</label>
+    <div class="div-title">
+        <h1>Rename Your Subtitle - Season and Episode</h1>
+    </div>
+    <div class="div-step">
+        <label class="step-label">Step 1</label>
+        <input class="step-input" type="text" name="videoNameFormatSample" id="videoNameFormatSample" placeholder="Insert a video name (ex: The.Big.Bang.Theory.S04E19.720p.5.1Ch.BluRay)" value="" />
+    </div>
+    <div class="div-step">
+        <label class="step-label">Step 2</label>
+        <input class="step-input" type="file" name="uploadFile" id="uploadFile" placeholder="Select your subtitle file(s) [.srt .zip .rar]" multiple />
+    </div>
+    <div class="div-button-start">
+        <button class="btn-start" type="submit" id="upload-button">Start</button>
     </div>
 }

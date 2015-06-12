@@ -12,7 +12,8 @@ namespace RenameSubtitle.Controllers
     public class HomeController : Controller
     {
         #region Constants
-        private const string ROOT_FOLDER = @"D:\Temp\";
+        private const string ROOT_FOLDER = @"D:\rename-subtitles-files\";
+        private const string TEMP_FOLDER = ROOT_FOLDER + @"tmp\";
         private const string FORMATTED_SUBTITLES_FOLDER = ROOT_FOLDER + @"formatted-subtitles\";
         private readonly string[] ZIP_FORMATS_LIST = { ".zip", ".rar" };
         private const string ZIP_SUBTITLES_FILE = "renamed-subtitles.zip";
@@ -33,36 +34,36 @@ namespace RenameSubtitle.Controllers
             {
                 if (Request.Files.Count > 0)
                 {
+                    string mask = _GetMask(videoNameFormatSample);
+
+                    _CreateFolders();
+
+                    _InitSevenZipExtractor();
+
                     foreach (string fileKey in Request.Files)
                     {
                         HttpPostedFileBase file = Request.Files[fileKey];
 
                         if (file != null)
                         {
-                            string mask = _GetMask(videoNameFormatSample);
-
-                            _CreateFolders();
-
-                            _InitSevenZipExtractor();
-
                             if (file.FileName.EndsWith(SUBTITLE_EXTENSION))
                             {
                                 file.SaveAs(FORMATTED_SUBTITLES_FOLDER + _GetNewFileName(file.FileName, mask));
                             }
                             else if (file.FileName.EndsWithAny(ZIP_FORMATS_LIST))
                             {
-                                file.SaveAs(ROOT_FOLDER + file.FileName);
+                                file.SaveAs(TEMP_FOLDER + file.FileName);
 
-                                _HandleZipFile(ROOT_FOLDER + file.FileName, mask);
+                                _HandleZipFile(TEMP_FOLDER + file.FileName, mask);
                             }
-
-                            _CreateZipFile();
-
-                            _DownloadZipFile();
-
-                            _DeleteCreatedFiles(file.FileName);
                         }
                     }
+
+                    _CreateZipFile();
+
+                    _DownloadZipFile();
+
+                    _DeleteCreatedFiles();
                 }
             }
             catch(Exception ex)
@@ -79,6 +80,7 @@ namespace RenameSubtitle.Controllers
         private void _CreateFolders()
         {
             System.IO.Directory.CreateDirectory(ROOT_FOLDER);
+            System.IO.Directory.CreateDirectory(TEMP_FOLDER);
             System.IO.Directory.CreateDirectory(FORMATTED_SUBTITLES_FOLDER);
         }
 
@@ -219,17 +221,19 @@ namespace RenameSubtitle.Controllers
             }
         }
 
-        private void _DeleteCreatedFiles(string receivedZipFile)
+        private void _DeleteCreatedFiles()
         {
             if(System.IO.File.Exists(ROOT_FOLDER + ZIP_SUBTITLES_FILE))
                 System.IO.File.Delete(ROOT_FOLDER + ZIP_SUBTITLES_FILE);
 
-            if (System.IO.File.Exists(ROOT_FOLDER + receivedZipFile))
-                System.IO.File.Delete(ROOT_FOLDER + receivedZipFile);
+            System.IO.DirectoryInfo dir = new DirectoryInfo(TEMP_FOLDER);
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                file.Delete();
+            }
 
-
-            System.IO.DirectoryInfo downloadedMessageInfo = new DirectoryInfo(FORMATTED_SUBTITLES_FOLDER);
-            foreach (FileInfo file in downloadedMessageInfo.GetFiles())
+            dir = new DirectoryInfo(FORMATTED_SUBTITLES_FOLDER);
+            foreach (FileInfo file in dir.GetFiles())
             {
                 file.Delete();
             }

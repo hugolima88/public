@@ -23,7 +23,6 @@ namespace RenameSubtitle.Controllers
         #region Publics Methods
         public ActionResult Index()
         {
-            ViewBag.Title = "Rename All Your Subtitles :)";
             return View("_UploadFiles");
         }
 
@@ -59,16 +58,17 @@ namespace RenameSubtitle.Controllers
                         }
                     }
 
-                    _CreateZipFile();
-
-                    _DownloadZipFile();
+                    if (_CreateZipFile())
+                    {
+                        _DownloadZipFile();
+                    }
 
                     _DeleteCreatedFiles();
                 }
             }
             catch(Exception ex)
             {
-
+                return View("_ServerError", (object) ex.Message);
             }
 
             return View("_UploadFiles");
@@ -164,13 +164,20 @@ namespace RenameSubtitle.Controllers
             SevenZipExtractor.SetLibraryPath(libPath);
         }
 
-        private void _CreateZipFile()
+        private bool _CreateZipFile()
         {
-            SevenZipCompressor compressor = new SevenZipCompressor();
-            compressor.ArchiveFormat = OutArchiveFormat.Zip;
-            compressor.CompressionMode = CompressionMode.Create;
-            compressor.TempFolderPath = System.IO.Path.GetTempPath();
-            compressor.CompressDirectory(FORMATTED_SUBTITLES_FOLDER, ROOT_FOLDER + ZIP_SUBTITLES_FILE);
+            if (System.IO.Directory.GetFiles(FORMATTED_SUBTITLES_FOLDER).Count() > 0)
+            {
+                SevenZipCompressor compressor = new SevenZipCompressor();
+                compressor.ArchiveFormat = OutArchiveFormat.Zip;
+                compressor.CompressionMode = CompressionMode.Create;
+                compressor.TempFolderPath = System.IO.Path.GetTempPath();
+                compressor.CompressDirectory(FORMATTED_SUBTITLES_FOLDER, ROOT_FOLDER + ZIP_SUBTITLES_FILE);
+
+                return true;
+            }
+            else
+                return false;
         }
 
         private void _HandleZipFile(string zipFilePath, string mask)

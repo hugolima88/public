@@ -205,7 +205,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="Views\Home\_UploadFiles.cshtml" />
+    <Content Include="Views\Home\_Home.cshtml" />
     <Content Include="Views\Home\_ServerError.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -236,7 +236,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>2360</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

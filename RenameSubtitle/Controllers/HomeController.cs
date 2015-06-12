@@ -12,18 +12,18 @@ namespace RenameSubtitle.Controllers
     public class HomeController : Controller
     {
         #region Constants
-        private const string ROOT_FOLDER = @"C:\rename-subtitles-files\";
-        private const string TEMP_FOLDER = ROOT_FOLDER + @"tmp\";
-        private const string FORMATTED_SUBTITLES_FOLDER = ROOT_FOLDER + @"formatted-subtitles\";
-        private readonly string[] ZIP_FORMATS_LIST = { ".zip", ".rar" };
-        private const string ZIP_SUBTITLES_FILE = "renamed-subtitles.zip";
-        private const string SUBTITLE_EXTENSION = ".srt";
+        private string ROOT_FOLDER = System.Web.HttpContext.Current.Server.MapPath("~/") + @"rename-subtitles-files\";
+        private string TEMP_FOLDER = System.Web.HttpContext.Current.Server.MapPath("~/") + @"rename-subtitles-files\tmp\";
+        private string FORMATTED_SUBTITLES_FOLDER = System.Web.HttpContext.Current.Server.MapPath("~/") + @"rename-subtitles-files\formatted-subtitles\";
+        private string[] ZIP_FORMATS_LIST = { ".zip", ".rar" };
+        private string ZIP_SUBTITLES_FILE = "renamed-subtitles.zip";
+        private string SUBTITLE_EXTENSION = ".srt";
         #endregion
 
         #region Publics Methods
         public ActionResult Index()
         {
-            return View("_UploadFiles");
+            return View("_Home");
         }
 
         [HttpPost]
@@ -36,6 +36,8 @@ namespace RenameSubtitle.Controllers
                     string mask = _GetMask(videoNameFormatSample);
 
                     _CreateFolders();
+
+                    _DeleteCreatedFiles();
 
                     _InitSevenZipExtractor();
 
@@ -71,7 +73,7 @@ namespace RenameSubtitle.Controllers
                 return View("_ServerError", (object) ex.Message);
             }
 
-            return View("_UploadFiles");
+            return View("_Home");
         }
 
         #endregion
@@ -236,7 +238,7 @@ namespace RenameSubtitle.Controllers
                     filePathTmp = _GetNewFileName(filePathTmp, mask);
 
                     System.IO.File.Move(filePath, FORMATTED_SUBTITLES_FOLDER + filePathTmp);
-                }
+                    }
                 else
                 {
                     System.IO.File.Delete(filePath);

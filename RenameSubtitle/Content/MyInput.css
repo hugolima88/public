@@ -1,0 +1,17 @@
+﻿ .step-input {
+     border-color: #cccccc;
+     font-size: 18px;
+     padding: 12px;
+     border-width: 1px;
+     border-style: solid;
+     border-radius: 10px;
+     box-shadow: 0px 0px 11px 0px rgba(42, 42, 42, .3);
+     text-shadow: 0px 0px 0px rgba(42, 42, 42, .75);
+     font-family: arial;
+     width: 80%;
+     height: 40px;
+     cursor: pointer;
+ }
+ .step-input:focus {
+     outline: none;
+ }

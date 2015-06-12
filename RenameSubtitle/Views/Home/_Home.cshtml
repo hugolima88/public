@@ -1,9 +1,7 @@
 ﻿@model string
 
-@*@using (Html.BeginForm("UploadFiles", "Home", FormMethod.Post, new { @class = "main-form", enctype = "multipart/form-data" }))
-{*@
-   
-   
+@using (Html.BeginForm("UploadFiles", "Home", FormMethod.Post, new { @class = "main-form", enctype = "multipart/form-data" }))
+{
     <div class="div-col-1">
         <span></span>
     </div>
@@ -26,19 +24,20 @@
                     <label class="step-label">1 - Insert a video name example</label>
                 </div>
                 <div class="div-input">
-                    <input class="step-input" type="text" name="videoNameFormatSample" id="videoNameFormatSample" placeholder="(ex: The.Big.Bang.Theory.S04E19.720p.5.1Ch.BluRay)" value="" />
+                    <input class="step-input" type="text" name="videoNameFormatSample" id="videoNameFormatSample" placeholder="ex: The.Big.Bang.Theory.S04E19.720p.5.1Ch.BluRay" value="" />
                 </div>
                 <div class="div-step">
                     <label class="step-label">2 - Select your subtitle file(s)</label>
                 </div>
                 <div class="div-input">
-                    <input class="step-input" type="file" name="uploadFile" id="uploadFile" accept=".srt, .zip, .rar" multiple />
+                    <input class="step-input hide" type="file" name="uploadFile" id="uploadFile" accept=".srt, .zip, .rar" multiple />
+                    <input class="step-input" id="btn-upload-file" placeholder="Extensions .srt .zip. rar supported" readonly />
                 </div>
                 <div class="div-step">
                     <label class="step-label">3 - Finish</label>
                 </div>
                 <div class="div-button-rename">
-                    <button class="btn-start" type="submit" id="upload-button">Rename</button>
+                    <button class="myButton" type="submit" id="upload-button">Rename</button>
                 </div>
             </div>
         </div>
@@ -51,4 +50,4 @@
 
 
     
-@*}*@
+}

@@ -12,9 +12,11 @@ namespace RenameSubtitle.Controllers
     public class HomeController : Controller
     {
         #region Constants
-        private const string ROOT_PATH = @"D:\Temp\";
-        private const string UNZIP_PATH = ROOT_PATH + @"Unzip\";
-        private const string UNZIP_FORMATTED_PATH = ROOT_PATH + @"Unzip\"; 
+        private const string ROOT_FOLDER = @"D:\Temp\";
+        private const string FORMATTED_SUBTITLES_FOLDER = ROOT_FOLDER + @"formatted-subtitles\";
+        private readonly string[] ZIP_FORMATS_LIST = { ".zip", ".rar" };
+        private const string ZIP_SUBTITLES_FILE = "renamed-subtitles.zip";
+        private const string SUBTITLE_EXTENSION = ".srt";
         #endregion
 
         #region Publics Methods
@@ -27,67 +29,57 @@ namespace RenameSubtitle.Controllers
         [HttpPost]
         public ActionResult UploadFiles(string videoNameFormatSample)
         {
-            string mask = _GetMask(videoNameFormatSample);
-
-            if (Request.Files.Count > 0)
+            try
             {
-                foreach (string fileKey in Request.Files)
+                if (Request.Files.Count > 0)
                 {
-                    HttpPostedFileBase file = Request.Files[fileKey];
-
-                    if (file != null)
+                    foreach (string fileKey in Request.Files)
                     {
-                        if (file.FileName.EndsWith("srt"))
-                        {
-                            file.SaveAs(ROOT_PATH + _GetNewFileName(file.FileName, mask));
-                        }
-                        else if (file.FileName.EndsWith("rar"))
-                        {
-                            string zipFilePath = file.FileName.Replace(".rar", ".zip");
-                            file.SaveAs(ROOT_PATH + zipFilePath);
+                        HttpPostedFileBase file = Request.Files[fileKey];
 
-                            _HandleZipFile(ROOT_PATH + zipFilePath, mask);
-                        }
-                        else if (file.FileName.EndsWith("zip"))
+                        if (file != null)
                         {
-                            file.SaveAs(ROOT_PATH + file.FileName);
+                            string mask = _GetMask(videoNameFormatSample);
 
-                            _HandleZipFile(ROOT_PATH + file.FileName, mask);
+                            _CreateFolders();
+
+                            _InitSevenZipExtractor();
+
+                            if (file.FileName.EndsWith(SUBTITLE_EXTENSION))
+                            {
+                                file.SaveAs(FORMATTED_SUBTITLES_FOLDER + _GetNewFileName(file.FileName, mask));
+                            }
+                            else if (file.FileName.EndsWithAny(ZIP_FORMATS_LIST))
+                            {
+                                file.SaveAs(ROOT_FOLDER + file.FileName);
+
+                                _HandleZipFile(ROOT_FOLDER + file.FileName, mask);
+                            }
+
+                            _CreateZipFile();
+
+                            _DownloadZipFile();
+
+                            _DeleteCreatedFiles(file.FileName);
                         }
                     }
                 }
             }
+            catch(Exception ex)
+            {
 
-            return View();
-        } 
+            }
+
+            return View("_UploadFiles");
+        }
+
         #endregion
 
         #region Privates Methods
-        private void _HandleZipFile(string zipFilePath, string mask)
+        private void _CreateFolders()
         {
-            SevenZipExtractor.SetLibraryPath(@"D:\Projetos Pessoais\RenameSubtitle\libs\7z.dll");
-            SevenZipExtractor szip = new SevenZipExtractor(zipFilePath);
-            szip.ExtractArchive(UNZIP_PATH);
-
-            string[] fileEntries = Directory.GetFiles(UNZIP_PATH);
-            string filePathTmp = string.Empty;
-            foreach(string filePath in fileEntries)
-            {
-                if(filePath.EndsWith(".srt"))
-                {
-                    filePathTmp = filePath.Replace(UNZIP_PATH, "");
-
-                    filePathTmp = _GetNewFileName(filePathTmp, mask);
-
-                    System.IO.File.Move(filePath, UNZIP_PATH + filePathTmp);
-                }
-                else
-                {
-                    System.IO.File.Delete(filePath);
-                }
-                
-            }
-
+            System.IO.Directory.CreateDirectory(ROOT_FOLDER);
+            System.IO.Directory.CreateDirectory(FORMATTED_SUBTITLES_FOLDER);
         }
 
         private string _GetMask(string videoNameFormatSample)
@@ -161,7 +153,87 @@ namespace RenameSubtitle.Controllers
             }
 
             return newFileName;
-        } 
+        }
+
+        private void _InitSevenZipExtractor()
+        {
+            string libPath = Path.Combine(HttpRuntime.AppDomainAppPath, "Libs/7z.dll");
+            //SevenZipExtractor.SetLibraryPath(@"D:\Projetos Pessoais\RenameSubtitle\RenameSubtitle\Libs/7z.dll");
+            SevenZipExtractor.SetLibraryPath(libPath);
+        }
+
+        private void _CreateZipFile()
+        {
+            SevenZipCompressor compressor = new SevenZipCompressor();
+            compressor.ArchiveFormat = OutArchiveFormat.Zip;
+            compressor.CompressionMode = CompressionMode.Create;
+            compressor.TempFolderPath = System.IO.Path.GetTempPath();
+            compressor.CompressDirectory(FORMATTED_SUBTITLES_FOLDER, ROOT_FOLDER + ZIP_SUBTITLES_FILE);
+        }
+
+        private void _HandleZipFile(string zipFilePath, string mask)
+        {
+            SevenZipExtractor szip = new SevenZipExtractor(zipFilePath);
+            szip.ExtractArchive(FORMATTED_SUBTITLES_FOLDER);
+
+            string[] fileEntries = Directory.GetFiles(FORMATTED_SUBTITLES_FOLDER);
+            string filePathTmp = string.Empty;
+            foreach (string filePath in fileEntries)
+            {
+                if (filePath.EndsWith(SUBTITLE_EXTENSION))
+                {
+                    filePathTmp = filePath.Replace(FORMATTED_SUBTITLES_FOLDER, "");
+
+                    filePathTmp = _GetNewFileName(filePathTmp, mask);
+
+                    System.IO.File.Move(filePath, FORMATTED_SUBTITLES_FOLDER + filePathTmp);
+                }
+                else
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
+        }
+
+        private void _DownloadZipFile()
+        {
+            FileInfo file = new FileInfo(ROOT_FOLDER + ZIP_SUBTITLES_FILE);
+
+            if (file.Exists)
+            {
+                System.Web.HttpResponse response = System.Web.HttpContext.Current.Response;
+
+                response.ClearContent();
+                response.Clear();
+                response.AddHeader("Content-Disposition", String.Format("attachment; filename={0}", file.Name));
+
+                response.AddHeader("Content-Length", file.Length.ToString());
+
+                response.ContentType = "application / zip";
+
+                response.TransmitFile(file.FullName);
+                response.Flush();
+                
+                response.End();
+
+            }
+        }
+
+        private void _DeleteCreatedFiles(string receivedZipFile)
+        {
+            if(System.IO.File.Exists(ROOT_FOLDER + ZIP_SUBTITLES_FILE))
+                System.IO.File.Delete(ROOT_FOLDER + ZIP_SUBTITLES_FILE);
+
+            if (System.IO.File.Exists(ROOT_FOLDER + receivedZipFile))
+                System.IO.File.Delete(ROOT_FOLDER + receivedZipFile);
+
+
+            System.IO.DirectoryInfo downloadedMessageInfo = new DirectoryInfo(FORMATTED_SUBTITLES_FOLDER);
+            foreach (FileInfo file in downloadedMessageInfo.GetFiles())
+            {
+                file.Delete();
+            }
+        }
         #endregion
     }
 }

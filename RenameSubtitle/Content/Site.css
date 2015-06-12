@@ -20,8 +20,8 @@
 }
 
 .div-alltitles{
-    border: dotted;
-    border-color: lightgrey;
+    /*border: dotted;
+    border-color: lightgrey;*/
     height: 150px;
     margin-bottom: 20px;
 }
@@ -86,8 +86,8 @@ h2{
 
 .btn-start{
     text-align: center;
-    width: 300px;
-    height: 40px;
+    width: 400px;
+    height: 55px;
     font-size: 23px;
     font-family: Arial;
     font-weight: normal;

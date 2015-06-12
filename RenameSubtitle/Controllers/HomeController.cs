@@ -40,9 +40,9 @@ namespace RenameSubtitle.Controllers
 
                     _InitSevenZipExtractor();
 
-                    foreach (string fileKey in Request.Files)
+                    for (int i = 0; i < Request.Files.Count; i++ )
                     {
-                        HttpPostedFileBase file = Request.Files[fileKey];
+                        HttpPostedFileBase file = Request.Files[i];
 
                         if (file != null)
                         {

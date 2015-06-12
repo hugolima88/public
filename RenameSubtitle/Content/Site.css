@@ -20,13 +20,20 @@
 }
 
 h1{
-    font-size: 36px;
+    font-size: 48px;
     font-family: Arial;
     text-align: center;
 }
 
+h2{
+    font-size: 24px;
+    font-family: Arial;
+    color: dimgrey;
+    text-align: center;
+}
+
 .step-label{
-    font-size: 22px;
+    font-size: 24px;
     font-family: Arial;
     font-weight: normal;
     margin-right: 40px;
@@ -37,10 +44,16 @@ h1{
     height: 35px;
     float: right;
     font-size: 16px;
+    font-family: Arial;
+    font-weight: normal;
 }
 
 .div-title{
-    margin-bottom: 50px;
+    margin-bottom: 10px;
+}
+
+.div-subtitle{
+    margin-bottom: 80px;
 }
 
 .div-step{

@@ -12,7 +12,7 @@ namespace RenameSubtitle.Controllers
     public class HomeController : Controller
     {
         #region Constants
-        private const string ROOT_FOLDER = @"D:\rename-subtitles-files\";
+        private const string ROOT_FOLDER = @"C:\rename-subtitles-files\";
         private const string TEMP_FOLDER = ROOT_FOLDER + @"tmp\";
         private const string FORMATTED_SUBTITLES_FOLDER = ROOT_FOLDER + @"formatted-subtitles\";
         private readonly string[] ZIP_FORMATS_LIST = { ".zip", ".rar" };

@@ -1,10 +1,12 @@
 ﻿@model string
 
-
 @using (Html.BeginForm("UploadFiles", "Home", FormMethod.Post, new { @class = "main-form", enctype = "multipart/form-data" }))
 {
     <div class="div-title">
-        <h1>Rename Your Subtitle - Season and Episode</h1>
+        <h1>Rename Your Subtitles</h1>
+    </div>
+    <div class="div-subtitle">
+        <h2>Based on season and episodes</h2>
     </div>
     <div class="div-step">
         <label class="step-label">Step 1</label>

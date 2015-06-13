@@ -1,20 +1,12 @@
 ﻿$(document).ready(function () {
     $('#upload-button').on('click', function (e) {
-        //if (files.length > 0) {
-        //    if (window.FormData !== undefined) {
-        //        var data = new FormData();
-        //        for (var x = 0; x < files.length; x++) {
-        //            data.append("file" + x, files[x]);
-        //        }
-               
-        //    } else {
-        //        alert("This browser doesn't support HTML5 file uploads!");
-        //    }
-        //}
-
-        //e.preventDefault(); // Cancel the submit
-        //return false;
+        if(!validateFields())
+        {
+            e.preventDefault(); // Cancel the submit
+            return false;
+        }
     });
+
     $('#btn-upload-file').on('click', function (e) {
         $("#uploadFile").click();
     });
@@ -32,3 +24,30 @@
         $('#btn-upload-file').val(data);
     });
 });
+
+
+function validateFields()
+{
+    var ret = true;
+
+    var videoName = $("#videoNameFormatSample").val();
+    if(videoName == "")
+    {
+        $("#div-step-one-cell-right").addClass("validate-error");
+        ret = false;
+    }
+    else {
+        $("#div-step-one-cell-right").removeClass("validate-error");
+    }
+
+    var files = $("#uploadFile")[0].files;
+    if (files.length <= 0) {
+        $("#div-step-two-cell-right").addClass("validate-error");
+        ret = false;
+    }
+    else {
+        $("#div-step-two-cell-right").removeClass("validate-error");
+    }
+
+    return ret;
+}

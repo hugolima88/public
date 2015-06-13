@@ -26,7 +26,7 @@ body{
     height: 100%;
     float: left;
     background-color: #000000;
-    min-height: 630px;
+    min-height: 680px;
 
 }
 .div-col-3{
@@ -45,7 +45,7 @@ body{
 }
 
 .div-content{
-    height: 90%;
+    height: 81%;
     background-color: white;
     padding: 80px;
     padding-top: 30px;
@@ -94,5 +94,15 @@ h1{
     font-weight: 200;
     font-family: 'Segoe UI';
     font-weight: 400;
+}
+
+.div-footer{
+    border-top: solid;
+    border-top-width: 1px;
+    border-color: #EEEEEE;
+    height: 7%;
+    background-color: white;
+    text-align: center;
+    padding:10px;
 
 }

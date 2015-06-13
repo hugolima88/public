@@ -27,6 +27,7 @@ namespace RenameSubtitle
                       "~/Content/bootstrap.css",
                       "~/Content/MyButton.css",
                       "~/Content/MyInput.css",
+                      "~/Content/SegoeUI.css",
                       "~/Content/site.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/js").Include(

@@ -1,5 +1,5 @@
 ﻿html{
-    height: 100%;
+    height: 98%;
     width: 100%;
 }
 
@@ -7,6 +7,8 @@ body{
     height: 100%;
     width: 100%;
     background-color: #525252;
+    font-family:'Segoe UI'; 
+    font-weight:400;
 }
 
 .main-form {
@@ -33,8 +35,8 @@ body{
     width: 60%;
     height: 100%;
     float: left;
-    background-color: #FFFFFF;
-    min-height: 800px;
+    background-color: #000000;
+    min-height: 630px;
 
 }
 .div-col-3{
@@ -44,71 +46,80 @@ body{
 }
 
 .div-header{
-    height: 12%;
-    /*background-color: #000000;*/
+    height: 10%;
+    background-color: #000000;
+    padding-top: 0px;
+    text-align: left;
+    padding-left: 40px;
+    /*color: #27A7DF;*/
+    color: #FFFFFF;
 }
 
 .div-content{
-    height: 80%;
-}
-
-.div-footer{
-    height: 8%;
-    /*background-color: #000000;*/
-}
-
-.div-alltitles{
-    height: 150px;
-}
-
-.div-title{
-    margin-bottom: 10px;
+    height: 90%;
+    background-color: white;
+    padding: 80px;
+    padding-top: 30px;
 }
 
 .div-subtitle{
-    margin-bottom: 80px;
+    font-weight: 200;
+    font-size: 36px;
+    color: #505050;
+    padding-bottom: 60px;
 }
 
 .div-allsteps{
     height: 450px;
-    padding: 20px;
-    padding-left: 135px;
-    /*height: 420px;*/
-}
-
-.div-step{
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-.div-input{
-     margin-bottom: 50px;
-     margin-left: 35px;
 }
 
 .div-button-rename{
     vertical-align: bottom;
-    margin-left: 35px;
+}
+
+.div-step-line{
+    height: 100px;
+    font-weight: 200;
+    margin-bottom: 40px;
+}
+
+.div-step-cell-left{
+    width: 10%;
+    height: 100%;
+    background-color: #FF8C00;
+    float: left;
+    color: white;
+    font-size: 38px;
+    text-align: center;
+    padding-top: 21px;
+    vertical-align: central;
+}
+
+.div-step-cell-right{
+    width: 90%;
+    height: 100%;
+    float: left;
+    background-color: #EEEEEE;
+    padding: 10px;
+    padding-left: 30px;
+    font-size: 22px;
+    font-weight: 200;
+    line-height: 38px;
 }
 
 
 h1{
-    font-size: 48px;
-    font-family: Arial;
-    text-align: center;
+    font-size: 30px;
+    font-weight: 200;
+    font-family: 'Segoe UI';
+    font-weight: 400;
+
 }
 
 h2{
     font-size: 24px;
-    font-family: Arial;
     color: dimgrey;
     text-align: center;
-}
-
-.step-label{
-    font-size: 24px;
-    font-family: Arial;
-    font-weight: normal;
 }
 
 .btn-start{
@@ -116,7 +127,6 @@ h2{
     width: 80%;
     height: 55px;
     font-size: 23px;
-    font-family: Arial;
     font-weight: normal;
     background-color: white;
     border: solid;

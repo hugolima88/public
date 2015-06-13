@@ -1,4 +1,4 @@
-﻿@model string
+﻿@model RenameSubtitle.Models.HomeViewModel
 
 @using (Html.BeginForm("UploadFiles", "Home", FormMethod.Post, new { @class = "main-form", enctype = "multipart/form-data" }))
 {
@@ -36,6 +36,7 @@
                 </div>
             </div>
             <button class="myButton" type="submit" id="upload-button">Rename</button>
+            @*<label class="message" id="lblMessage">@Model.Message</label>*@
         </div>        
         <div class="div-footer">
             <span>Designed, developed and maintained by Hugo Santos.</span>

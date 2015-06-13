@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using SevenZip;
+using RenameSubtitle.Models;
 
 
 namespace RenameSubtitle.Controllers
@@ -23,7 +24,7 @@ namespace RenameSubtitle.Controllers
         #region Publics Methods
         public ActionResult Index()
         {
-            return View("_Home");
+            return View("_Home", new HomeViewModel());
         }
 
         [HttpPost]
@@ -35,37 +36,45 @@ namespace RenameSubtitle.Controllers
                 {
                     string mask = _GetMask(videoNameFormatSample);
 
-                    _CreateFolders();
-
-                    _DeleteCreatedFiles();
-
-                    _InitSevenZipExtractor();
-
-                    for (int i = 0; i < Request.Files.Count; i++ )
+                    if(!string.IsNullOrEmpty(mask))
                     {
-                        HttpPostedFileBase file = Request.Files[i];
+                        _CreateFolders();
 
-                        if (file != null)
+                        _DeleteCreatedFiles();
+
+                        _InitSevenZipExtractor();
+
+                        for (int i = 0; i < Request.Files.Count; i++)
                         {
-                            if (file.FileName.EndsWith(SUBTITLE_EXTENSION))
-                            {
-                                file.SaveAs(FORMATTED_SUBTITLES_FOLDER + _GetNewFileName(file.FileName, mask));
-                            }
-                            else if (file.FileName.EndsWithAny(ZIP_FORMATS_LIST))
-                            {
-                                file.SaveAs(TEMP_FOLDER + file.FileName);
+                            HttpPostedFileBase file = Request.Files[i];
 
-                                _HandleZipFile(TEMP_FOLDER + file.FileName, mask);
+                            if (file != null)
+                            {
+                                if (file.FileName.EndsWith(SUBTITLE_EXTENSION))
+                                {
+                                    file.SaveAs(FORMATTED_SUBTITLES_FOLDER + _GetNewFileName(file.FileName, mask));
+                                }
+                                else if (file.FileName.EndsWithAny(ZIP_FORMATS_LIST))
+                                {
+                                    file.SaveAs(TEMP_FOLDER + file.FileName);
+
+                                    _HandleZipFile(TEMP_FOLDER + file.FileName, mask);
+                                }
                             }
                         }
-                    }
 
-                    if (_CreateZipFile())
+                        if (_CreateZipFile())
+                        {
+                            _DownloadZipFile();
+                        }
+
+                        _DeleteCreatedFiles();
+                    }
+                    else
                     {
-                        _DownloadZipFile();
+                        HomeViewModel model = new HomeViewModel("The video name example contains no pattern (ex: S01E01 or s01e01).");
+                        return View("_Home", model);
                     }
-
-                    _DeleteCreatedFiles();
                 }
             }
             catch(Exception ex)
@@ -73,7 +82,7 @@ namespace RenameSubtitle.Controllers
                 return View("_ServerError", (object) ex.Message);
             }
 
-            return View("_Home");
+            return View("_Home", new HomeViewModel());
         }
 
         #endregion
@@ -137,12 +146,17 @@ namespace RenameSubtitle.Controllers
 
         private string _GetMask(string videoNameFormatSample)
         {
-            string mask = _GetMaskUppercase(videoNameFormatSample);
+            if (videoNameFormatSample.Length > 5)
+            {
+                string mask = _GetMaskUppercase(videoNameFormatSample);
 
-            if (string.IsNullOrEmpty(mask))
-                mask = _GetMaskLowercase(videoNameFormatSample);
+                if (string.IsNullOrEmpty(mask))
+                    mask = _GetMaskLowercase(videoNameFormatSample);
 
-            return mask;
+                return mask;
+            }
+            else
+                return string.Empty;
         }
 
         private string _GetNewFileName(string fileName, string mask)

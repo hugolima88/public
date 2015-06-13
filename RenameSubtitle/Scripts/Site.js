@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+    $("#lblMessage").val("");
     $('#upload-button').on('click', function (e) {
         if(!validateFields())
         {
@@ -22,32 +23,52 @@
             }
         }
         $('#btn-upload-file').val(data);
+        validateInputFilesField();
+    });
+
+    $('#videoNameFormatSample').on('keyup change', function () {
+        validateVideoNameField();
     });
 });
 
 
 function validateFields()
 {
+    var val1 = validateVideoNameField();
+    var val2 = validateInputFilesField();
+    return val1 && val2;
+}
+
+function validateVideoNameField() {
     var ret = true;
 
     var videoName = $("#videoNameFormatSample").val();
-    if(videoName == "")
-    {
+    if (videoName == "") {
         $("#div-step-one-cell-right").addClass("validate-error");
+        $("#div-step-one-cell-right").removeClass("validate-success");
         ret = false;
     }
     else {
         $("#div-step-one-cell-right").removeClass("validate-error");
+        $("#div-step-one-cell-right").addClass("validate-success");
     }
+    return ret;
+}
+
+function validateInputFilesField() {
+    var ret = true;
 
     var files = $("#uploadFile")[0].files;
     if (files.length <= 0) {
         $("#div-step-two-cell-right").addClass("validate-error");
+        $("#div-step-two-cell-right").removeClass("validate-success");
         ret = false;
     }
     else {
         $("#div-step-two-cell-right").removeClass("validate-error");
+        $("#div-step-two-cell-right").addClass("validate-success");
     }
-
     return ret;
 }
+
+
